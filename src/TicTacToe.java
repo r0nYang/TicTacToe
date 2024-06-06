@@ -14,6 +14,11 @@ public class TicTacToe extends JFrame implements ActionListener {
     boolean xTurn;
     Random random = new Random();
 
+    boolean infiniteMode;
+    int numberOfPicks = 0;
+    // TODO add checker for when game is over. Start screen to pick if you want infinite mode? If not infinite mode,
+    // have end screen so user can press restart.
+
     TicTacToe() {
         this.setSize(800, 800);
         this.setLayout(new BorderLayout());
@@ -46,9 +51,9 @@ public class TicTacToe extends JFrame implements ActionListener {
 
         xTurn = random.nextBoolean();
         if (xTurn) {
-            textLabel.setText("X turn");
+            textLabel.setText("X's turn");
         } else {
-            textLabel.setText("O turn");
+            textLabel.setText("O's turn");
         }
         buttonStatus(true);
     }
@@ -66,7 +71,6 @@ public class TicTacToe extends JFrame implements ActionListener {
         textLabel.setFont(new Font("AR Darling", Font.BOLD, 60));
         textLabel.setHorizontalAlignment(JLabel.CENTER);
         textLabel.setOpaque(true); // Makes the background opaque.
-        textLabel.setSize(800, 200); // NEED to set font size.
     }
 
     //EFFECTS: Creates a panel with 9 buttons added to it.
@@ -90,8 +94,8 @@ public class TicTacToe extends JFrame implements ActionListener {
         this.add(lowerPanel);
     }
 
-    private void checkForGameOver() {
-        int[][] possibleCombinations = new int[][]{
+    private boolean checkForGameWin() {
+        int[][] winningCombinations = new int[][]{
                 {0,1,2},
                 {3,4,5},
                 {6,7,8},
@@ -103,22 +107,23 @@ public class TicTacToe extends JFrame implements ActionListener {
         };
 
         for (int i=0;i<8;i++) {
-            int[] currentArray = possibleCombinations[i];
-            int first = currentArray[0];
-            int second = currentArray[1];
-            int third = currentArray[2];
-            String a = buttons[first].getText();
-            String b = buttons[second].getText();
-            String c = buttons[third].getText();
-            if (a.equals(b) && a.equals(c) && !a.equals("")) {
+            int[] currentArray = winningCombinations[i];
+            int firstNum = currentArray[0];
+            int secondNum = currentArray[1];
+            int thirdNum = currentArray[2];
+            String a = buttons[firstNum].getText();
+            String b = buttons[secondNum].getText();
+            String c = buttons[thirdNum].getText();
+            if (a.equals(b) && a.equals(c) && !a.isEmpty()) {
                 if (a.equals("X")) {
-                    xWin(first,second,third);
+                    xWin(firstNum,secondNum,thirdNum);
                 } else {
-                    oWin(first,second,third);
+                    oWin(firstNum,secondNum,thirdNum);
                 }
-                break;
+                return true;
             }
         }
+        return false;
     }
 
     private void oWin(int i, int i1, int i2) {
@@ -140,21 +145,25 @@ public class TicTacToe extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         for (int i = 0; i < 9; i++) {
-            if (e.getSource() == buttons[i]) {
+            if (e.getSource() == buttons[i] && buttons[i].getText().isEmpty()) {
                 if (xTurn) {
                     buttons[i].setText("X");
                     buttons[i].setForeground(Color.RED);
                     xTurn = false;
-                    textLabel.setText("O turn");
+                    textLabel.setText("O's turn");
                 } else {
                     buttons[i].setText("O");
                     buttons[i].setForeground(Color.GREEN);
                     xTurn = true;
-                    textLabel.setText("X turn");
+                    textLabel.setText("X's turn");
                 }
+                numberOfPicks++;
             }
         }
-        checkForGameOver();
+        if(!checkForGameWin() && numberOfPicks == 9) {
+            textLabel.setText("Tie");
+            buttonStatus(false);
+        }
     }
 
 }
