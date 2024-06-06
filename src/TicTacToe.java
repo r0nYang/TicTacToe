@@ -91,72 +91,34 @@ public class TicTacToe extends JFrame implements ActionListener {
     }
 
     private void checkForGameOver() {
-        if (buttons[0].getText().equals(buttons[1].getText())
-                && buttons[0].getText().equals(buttons[2].getText())
-                && !buttons[0].getText().equals("")) {
-            if (buttons[0].getText().equals("X")) {
-                xWin(0, 1, 2);
-            } else if (buttons[0].getText().equals("O")) {
-                oWin(0, 1, 2);
-            }
-        } else if (buttons[3].getText().equals(buttons[4].getText())
-                && buttons[3].getText().equals(buttons[5].getText())
-                && !buttons[3].getText().equals("")) {
-            if (buttons[3].getText().equals("X")) {
-                xWin(3, 4, 5);
-            } else if (buttons[3].getText().equals("O")) {
-                oWin(3, 4, 5);
-            }
-        } else if (buttons[6].getText().equals(buttons[7].getText())
-                && buttons[6].getText().equals(buttons[8].getText())
-                && !buttons[6].getText().equals("")) {
-            if (buttons[6].getText().equals("X")) {
-                xWin(6, 7, 8);
-            } else if (buttons[6].getText().equals("O")) {
-                oWin(6, 7, 8);
-            }
-        } else if (buttons[0].getText().equals(buttons[3].getText())
-                && buttons[3].getText().equals(buttons[6].getText())
-                && !buttons[0].getText().equals("")) {
-            if (buttons[6].getText().equals("X")) {
-                xWin(0, 3, 6);
-            } else if (buttons[6].getText().equals("O")) {
-                oWin(0, 3, 6);
-            }
-        } else if (buttons[1].getText().equals(buttons[4].getText())
-                && buttons[4].getText().equals(buttons[7].getText())
-                && !buttons[1].getText().equals("")) {
-            if (buttons[4].getText().equals("X")) {
-                xWin(1, 4, 7);
-            } else if (buttons[4].getText().equals("O")) {
-                oWin(1, 4, 7);
-            }
-        } else if (buttons[2].getText().equals(buttons[5].getText())
-                && buttons[5].getText().equals(buttons[8].getText())
-                && !buttons[2].getText().equals("")) {
-            if (buttons[2].getText().equals("X")) {
-                xWin(2,5,8);
-            } else if (buttons[2].getText().equals("O")) {
-                oWin(2,5,8);
-            }
-        } else if (buttons[0].getText().equals(buttons[4].getText())
-                && buttons[4].getText().equals(buttons[8].getText())
-                && !buttons[0].getText().equals("")) {
-            if (buttons[4].getText().equals("X")) {
-                xWin(0,4,8);
-            } else if (buttons[4].getText().equals("O")) {
-                oWin(0,4,8);
-            }
-        } else if (buttons[2].getText().equals(buttons[4].getText())
-                && buttons[4].getText().equals(buttons[6].getText())
-                && !buttons[2].getText().equals("")) {
-            if (buttons[2].getText().equals("X")) {
-                xWin(2,4,6);
-            } else if (buttons[2].getText().equals("O")) {
-                oWin(2,4,6);
+        int[][] possibleCombinations = new int[][]{
+                {0,1,2},
+                {3,4,5},
+                {6,7,8},
+                {0,3,6},
+                {1,4,7},
+                {2,5,8},
+                {0,4,8},
+                {2,4,6}
+        };
+
+        for (int i=0;i<8;i++) {
+            int[] currentArray = possibleCombinations[i];
+            int first = currentArray[0];
+            int second = currentArray[1];
+            int third = currentArray[2];
+            String a = buttons[first].getText();
+            String b = buttons[second].getText();
+            String c = buttons[third].getText();
+            if (a.equals(b) && a.equals(c) && !a.equals("")) {
+                if (a.equals("X")) {
+                    xWin(first,second,third);
+                } else {
+                    oWin(first,second,third);
+                }
+                break;
             }
         }
-
     }
 
     private void oWin(int i, int i1, int i2) {
