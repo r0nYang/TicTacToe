@@ -11,10 +11,12 @@ public class TicTacToe extends JFrame implements ActionListener {
     JPanel lowerPanel;
     JLabel textLabel;
     JButton[] buttons;
+    JButton restartButton;
     boolean xTurn;
     Random random = new Random();
+    int cd = 1500;
 
-    boolean infiniteMode;
+    boolean infiniteMode=false;
     int numberOfPicks = 0;
     // TODO add checker for when game is over. Start screen to pick if you want infinite mode? If not infinite mode,
     // have end screen so user can press restart.
@@ -26,25 +28,41 @@ public class TicTacToe extends JFrame implements ActionListener {
 
         initializeLowerPanel();
         initializeTextLabel();
+        initializeRestartButton();
         initializeUpperPanel();
 
         this.setVisible(true);
-        setUp();
+        chooseStarter();
+        UIManager.put("Button.select", Color.white); // When you click on the button, it no longer makes it blue.
     }
 
     private void initializeUpperPanel() {
         upperPanel = new JPanel();
+
         upperPanel.setLayout(new BorderLayout());
         upperPanel.setBackground(Color.black);
         upperPanel.setForeground(Color.white);
         upperPanel.setBounds(0, 0, 800, 100);
+        upperPanel.add(restartButton, BorderLayout.EAST);
         upperPanel.add(textLabel);
         this.add(upperPanel, BorderLayout.NORTH);
     }
 
-    private void setUp() {
+    private void initializeRestartButton() {
+        restartButton = new JButton();
+        restartButton.setText("Restart Game");
+        restartButton.addActionListener(this);
+        restartButton.setSize(125,25);
+        restartButton.setFocusable(false);
+        restartButton.setFocusPainted(false);
+        restartButton.setBorderPainted(false);
+        restartButton.setBackground(Color.white);
+    }
+
+    private void chooseStarter() {
+        restartButton.setEnabled(false);
         try { // Adds delay for "Tic-Tac-Toe" to show up before showing whose turns it is
-            Thread.sleep(1500);
+            Thread.sleep(cd);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -89,6 +107,7 @@ public class TicTacToe extends JFrame implements ActionListener {
             buttons[i].setEnabled(false);
             buttons[i].addActionListener(this);
             buttons[i].setFont(new Font("AR Darling", Font.BOLD, 35));
+            buttons[i].setBackground(Color.white);
             lowerPanel.add(buttons[i]);
         }
         this.add(lowerPanel);
@@ -120,6 +139,7 @@ public class TicTacToe extends JFrame implements ActionListener {
                 } else {
                     oWin(firstNum,secondNum,thirdNum);
                 }
+                restartButton.setEnabled(true);
                 return true;
             }
         }
@@ -163,7 +183,20 @@ public class TicTacToe extends JFrame implements ActionListener {
         if(!checkForGameWin() && numberOfPicks == 9) {
             textLabel.setText("Tie");
             buttonStatus(false);
+            restartButton.setEnabled(true);
+        }
+        if (e.getSource()== restartButton) {
+            restartGame();
         }
     }
 
+    private void restartGame() {
+        for (int i = 0;i<9;i++) {
+            buttons[i].setText("");
+            buttons[i].setBackground(Color.white);
+        }
+        cd=300;
+        chooseStarter();
+        numberOfPicks=0;
+    }
 }
