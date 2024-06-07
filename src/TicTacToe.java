@@ -7,33 +7,60 @@ import java.awt.event.ActionListener;
 import java.util.Random;
 
 public class TicTacToe extends JFrame implements ActionListener {
+    CardLayout cl;
+    JPanel panelContainer;
+    JPanel gamePanel;
+    JPanel menuScreen;
     JPanel upperPanel;
     JPanel lowerPanel;
     JLabel textLabel;
     JButton[] buttons;
     JButton restartButton;
+    JButton playButton;
     boolean xTurn;
     Random random = new Random();
     int cd = 1500;
-
-    boolean infiniteMode=false;
     int numberOfPicks = 0;
     // TODO add checker for when game is over. Start screen to pick if you want infinite mode? If not infinite mode,
     // have end screen so user can press restart.
+    // TODO ADD A BUTTON TO RETURN TO MENU
 
     TicTacToe() {
         this.setSize(800, 800);
         this.setLayout(new BorderLayout());
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+        initializeMenu();
+        gamePanel = new JPanel();
+        panelContainer = new JPanel();
+        cl = new CardLayout();
+        gamePanel.setLayout(new BorderLayout());
+        panelContainer.setLayout(cl);
+        panelContainer.add(gamePanel, "2");
+        panelContainer.add(menuScreen, "1");
+
         initializeLowerPanel();
         initializeTextLabel();
         initializeRestartButton();
         initializeUpperPanel();
 
+        cl.show(panelContainer, "1");
         this.setVisible(true);
+        this.add(panelContainer);
         chooseStarter();
         UIManager.put("Button.select", Color.white); // When you click on the button, it no longer makes it blue.
+    }
+
+    private void initializeMenu() {
+        menuScreen = new JPanel();
+        menuScreen.setBackground(Color.white);
+        playButton = new JButton();
+        playButton.setPreferredSize(new Dimension(150,50));
+        playButton.setText("Regular Mode");
+        playButton.setFocusable(false);
+        // https://stackoverflow.com/questions/5714214/set-size-wont-work-in-java for why setSize didn't work.
+        playButton.addActionListener(this);
+        menuScreen.add(playButton);
     }
 
     private void initializeUpperPanel() {
@@ -45,8 +72,9 @@ public class TicTacToe extends JFrame implements ActionListener {
         upperPanel.setBounds(0, 0, 800, 100);
         upperPanel.add(restartButton, BorderLayout.EAST);
         upperPanel.add(textLabel);
-        this.add(upperPanel, BorderLayout.NORTH);
+        gamePanel.add(upperPanel, BorderLayout.NORTH);
     }
+
 
     private void initializeRestartButton() {
         restartButton = new JButton();
@@ -96,7 +124,6 @@ public class TicTacToe extends JFrame implements ActionListener {
         lowerPanel = new JPanel();
         buttons = new JButton[9];
         lowerPanel.setLayout(new GridLayout(3, 3));
-        lowerPanel.setSize(800, 600);
 
         // Visit https://docs.oracle.com/javase%2Ftutorial%2Fuiswing%2F%2F/layout/visual.html
         // for other layouts.
@@ -106,11 +133,11 @@ public class TicTacToe extends JFrame implements ActionListener {
             buttons[i].setFocusable(false);
             buttons[i].setEnabled(false);
             buttons[i].addActionListener(this);
-            buttons[i].setFont(new Font("AR Darling", Font.BOLD, 35));
+            buttons[i].setFont(new Font("AR Darling", Font.BOLD, 60));
             buttons[i].setBackground(Color.white);
             lowerPanel.add(buttons[i]);
         }
-        this.add(lowerPanel);
+        gamePanel.add(lowerPanel);
     }
 
     private boolean checkForGameWin() {
@@ -127,17 +154,14 @@ public class TicTacToe extends JFrame implements ActionListener {
 
         for (int i=0;i<8;i++) {
             int[] currentArray = winningCombinations[i];
-            int firstNum = currentArray[0];
-            int secondNum = currentArray[1];
-            int thirdNum = currentArray[2];
-            String a = buttons[firstNum].getText();
-            String b = buttons[secondNum].getText();
-            String c = buttons[thirdNum].getText();
+            String a = buttons[currentArray[0]].getText();
+            String b = buttons[currentArray[1]].getText();
+            String c = buttons[currentArray[2]].getText();
             if (a.equals(b) && a.equals(c) && !a.isEmpty()) {
                 if (a.equals("X")) {
-                    xWin(firstNum,secondNum,thirdNum);
+                    xWin(currentArray);
                 } else {
-                    oWin(firstNum,secondNum,thirdNum);
+                    oWin(currentArray);
                 }
                 restartButton.setEnabled(true);
                 return true;
@@ -146,7 +170,10 @@ public class TicTacToe extends JFrame implements ActionListener {
         return false;
     }
 
-    private void oWin(int i, int i1, int i2) {
+    private void oWin(int[] currentArray) {
+        int i = currentArray[0];
+        int i1 = currentArray[1];
+        int i2 = currentArray[2];
         buttons[i].setBackground(Color.GREEN);
         buttons[i1].setBackground(Color.GREEN);
         buttons[i2].setBackground(Color.GREEN);
@@ -154,7 +181,10 @@ public class TicTacToe extends JFrame implements ActionListener {
         buttonStatus(false);
     }
 
-    private void xWin(int i, int i1, int i2) {
+    private void xWin(int[] currentArray) {
+        int i = currentArray[0];
+        int i1 = currentArray[1];
+        int i2 = currentArray[2];
         buttons[i].setBackground(Color.RED);
         buttons[i1].setBackground(Color.RED);
         buttons[i2].setBackground(Color.RED);
@@ -164,6 +194,9 @@ public class TicTacToe extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == playButton) {
+            cl.show(panelContainer, "2");
+        }
         for (int i = 0; i < 9; i++) {
             if (e.getSource() == buttons[i] && buttons[i].getText().isEmpty()) {
                 if (xTurn) {
