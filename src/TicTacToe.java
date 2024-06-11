@@ -52,15 +52,32 @@ public class TicTacToe extends JFrame implements ActionListener {
     }
 
     private void initializeMenu() {
+        JLabel textLabelMenu = new JLabel();
+        textLabelMenu.setBackground(Color.white);
+        textLabelMenu.setText("Tic-Tac-Toe");
+        textLabelMenu.setFont(new Font("AR Darling", Font.BOLD, 60));
+        textLabelMenu.setHorizontalAlignment(JLabel.CENTER);
+        textLabelMenu.setOpaque(true); // Makes the background opaque.
+
+
         menuScreen = new JPanel();
+        menuScreen.setLayout(new GridBagLayout());
         menuScreen.setBackground(Color.white);
         playButton = new JButton();
-        playButton.setPreferredSize(new Dimension(150,50));
-        playButton.setText("Regular Mode");
+        playButton.setPreferredSize(new Dimension(300,50));
+        playButton.setText("Play");
+        playButton.setFont(new Font(null, Font.BOLD,35));
         playButton.setFocusable(false);
         // https://stackoverflow.com/questions/5714214/set-size-wont-work-in-java for why setSize didn't work.
         playButton.addActionListener(this);
-        menuScreen.add(playButton);
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 0, 10, 0); // Add some padding
+        gbc.anchor = GridBagConstraints.CENTER; // Center the components
+
+        menuScreen.add(textLabelMenu, gbc);
+        gbc.gridy = 1; // Move to the next row
+        menuScreen.add(playButton, gbc);
     }
 
     private void initializeUpperPanel() {
@@ -89,11 +106,6 @@ public class TicTacToe extends JFrame implements ActionListener {
 
     private void chooseStarter() {
         restartButton.setEnabled(false);
-        try { // Adds delay for "Tic-Tac-Toe" to show up before showing whose turns it is
-            Thread.sleep(cd);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
 
         xTurn = random.nextBoolean();
         if (xTurn) {
@@ -113,7 +125,6 @@ public class TicTacToe extends JFrame implements ActionListener {
     private void initializeTextLabel() {
         textLabel = new JLabel();
         textLabel.setBackground(Color.white);
-        textLabel.setText("Tic-Tac-Toe");
         textLabel.setFont(new Font("AR Darling", Font.BOLD, 60));
         textLabel.setHorizontalAlignment(JLabel.CENTER);
         textLabel.setOpaque(true); // Makes the background opaque.
