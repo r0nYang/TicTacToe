@@ -21,9 +21,6 @@ public class TicTacToe extends JFrame implements ActionListener {
     Random random = new Random();
     int cd = 1500;
     int numberOfPicks = 0;
-    // TODO add checker for when game is over. Start screen to pick if you want infinite mode? If not infinite mode,
-    // have end screen so user can press restart.
-    // TODO ADD A BUTTON TO RETURN TO MENU
 
     TicTacToe() {
         this.setSize(800, 800);
